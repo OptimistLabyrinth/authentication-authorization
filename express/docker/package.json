@@ -1,0 +1,12 @@
+{
+  "name": "docker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "docker-compose up 1>/dev/null 2>&1 &",
+    "stop:clean": "yarn stop && yarn clean",
+    "stop": "docker-compose down",
+    "clean": "rm -rf mysql-data postgres-data mongodb-data redis-data"
+  }
+}

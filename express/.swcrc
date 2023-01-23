@@ -27,8 +27,12 @@
   },
   "minify": false,
   "exclude": [
-    "node_modules/",
+    "coverage/**/*",
+    "dist/**/*",
+    "docker/**/*",
+    "node_modules/**/*",
+    "test/**/*",
     ".eslintrc.js",
-    "jest.config.js"
+    "jest.config.ts"
   ]
 }

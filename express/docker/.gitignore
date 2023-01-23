@@ -1,0 +1,4 @@
+mysql-data/
+mongodb-data/
+postgres-data/
+redis-data/

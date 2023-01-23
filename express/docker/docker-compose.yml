@@ -1,0 +1,97 @@
+version: '3.8'
+services:
+  redis-cache:
+    image: redis:7
+    container_name: redis-cache
+    ports:
+      - 56379:6379
+    volumes:
+      - ./redis-data:/data
+      - ./redis-conf/redis.conf:/usr/local/etc/redis/redis.conf
+
+  mysql-database:
+    image: mysql:8
+    container_name: mysql-database
+    command:
+      - '--default_authentication_plugin=mysql_native_password'
+    ports:
+      - 53306:3306
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pwd_crypt
+      MYSQL_DATABASE: my_service
+      MYSQL_USER: normal_user
+      MYSQL_PASSWORD: normal_pwd_crypt
+
+  postgres-database:
+    image: postgres:15
+    container_name: postgres-database
+    ports:
+      - 55432:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: postgres_pwd_crypt
+
+  mongodb-database0:
+    image: mongo:6
+    container_name: mongodb-database0
+    ports:
+      - 57017:27017
+    command:
+      - '--bind_ip_all'
+      - '--replSet'
+      - 'serviceReplicaSet'
+      - '--keyFile'
+      - '/data/replica-set.keyfile'
+    volumes:
+      - ./mongodb-data/rs0:/data/db
+      - ./mongodb-conf/replica-set.keyfile:/data/replica-set.keyfile
+      - ./mongodb-init:/docker-entrypoint-initdb.d/
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root_pwd_crypt
+      MONGO_INITDB_DATABASE: my_service
+
+  mongodb-database1:
+    container_name: mongodb-database1
+    image: mongo:6
+    ports:
+      - 57018:27017
+    command:
+      - '--bind_ip_all'
+      - '--replSet'
+      - 'serviceReplicaSet'
+      - '--keyFile'
+      - '/data/replica-set.keyfile'
+    volumes:
+      - ./mongodb-data/rs1:/data/db
+      - ./mongodb-conf/replica-set.keyfile:/data/replica-set.keyfile
+      # - ./mongodb-init:/docker-entrypoint-initdb.d/
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root_pwd_crypt
+      MONGO_INITDB_DATABASE: my_service
+
+  mongodb-database2:
+    image: mongo:6
+    container_name: mongodb-database2
+    ports:
+      - 57019:27017
+    command:
+      - '--bind_ip_all'
+      - '--replSet'
+      - 'serviceReplicaSet'
+      - '--keyFile'
+      - '/data/replica-set.keyfile'
+    volumes:
+      - ./mongodb-data/rs2:/data/db
+      - ./mongodb-conf/replica-set.keyfile:/data/replica-set.keyfile
+      # - ./mongodb-init:/docker-entrypoint-initdb.d/
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root_pwd_crypt
+      MONGO_INITDB_DATABASE: my_service
