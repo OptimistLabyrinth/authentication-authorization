@@ -1,0 +1,11 @@
+coverage/
+dist/
+node_modules/
+
+*.log
+
+# JetBrains IDE
+.idea/
+
+# VSCode IDE
+.vscode/
