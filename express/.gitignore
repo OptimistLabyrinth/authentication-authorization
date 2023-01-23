@@ -2,7 +2,11 @@ coverage/
 dist/
 node_modules/
 
+# Log Files
 *.log
+
+# Environment Settings
+.env
 
 # JetBrains IDE
 .idea/

@@ -1,9 +1,9 @@
 import express from 'express'
 import morgan from 'morgan'
+import generateAuthRouter from './domain/auth/api/auth.controller'
+import generateUserRouter from './domain/user/api/user.controller'
 import errorHandler from './errorHandler'
-import rootRouter from './routes/root'
-import v1Router from './routes/v1'
-import v2Router from './routes/v2'
+import rootRouter from './routes'
 
 export const initializeApp = () => {
   const app = express()
@@ -16,8 +16,8 @@ export const initializeApp = () => {
   )
   app.use(express.static('public'))
   app.use('/', rootRouter)
-  app.use('/v1', v1Router)
-  app.use('/v2', v2Router)
+  app.use('/auth', generateAuthRouter())
+  app.use('/user', generateUserRouter())
   app.use(errorHandler)
   return app
 }
