@@ -1,7 +1,9 @@
 import supertest, { Request } from 'supertest'
 import { initializeApp } from '../../src/app'
 
-describe('e2e test for v1 router', () => {
+const routerBase = '/auth'
+
+describe(`e2e test for ${routerBase} router`, () => {
   let testAgent: supertest.SuperTest<Request>
 
   beforeAll(() => {
@@ -9,16 +11,16 @@ describe('e2e test for v1 router', () => {
     testAgent = supertest(app)
   })
 
-  describe('GET /v1', () => {
-    test('success on getting request from /', async () => {
+  describe(`GET ${routerBase}`, () => {
+    test(`success on getting request from ${routerBase}/hello`, async () => {
       // arrange
       // act
-      const response = await testAgent.get('/v1')
+      const response = await testAgent.get(`${routerBase}/hello`)
       // assert
       const { body } = response
       const { message } = body
       expect(response.statusCode).toBe(200)
-      expect(message).toEqual('Express + TypeScript Server')
+      expect(message).toEqual('auth hello')
     })
   })
 })

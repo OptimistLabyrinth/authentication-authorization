@@ -31,7 +31,6 @@
     "dist/**/*",
     "docker/**/*",
     "node_modules/**/*",
-    "test/**/*",
     ".eslintrc.js",
     "jest.config.ts"
   ]

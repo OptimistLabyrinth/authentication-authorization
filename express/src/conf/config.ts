@@ -1,10 +1,10 @@
 import { ConfigDefinition } from './config.d'
 
+let configSettings: ConfigDefinition
+
 const configDefaultSettings: ConfigDefinition = {
   mongodbConnectionUri: 'mongodb://127.0.0.1:27017',
 }
-
-export let configSettings: ConfigDefinition
 
 export const getConfig = (): ConfigDefinition => configSettings
 
