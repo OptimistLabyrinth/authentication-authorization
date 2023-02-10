@@ -19,6 +19,7 @@ export const initializeAllModels = (conn: Connection) => {
     AuthEmail,
     User: generateUserModel(conn),
   }
+  return models
 }
 
 export const getModels = (): Models => models

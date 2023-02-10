@@ -19,7 +19,7 @@ export const startServer = async () => {
   const { connection: mongoDbConnection } = await mongoose.connect(config.mongodbConnectionUri)
   initializeAllModels(mongoDbConnection)
 
-  // * setup Express
+  // * setup express.Application
   const app = initializeApp()
   app.set('port', port)
   const server = http.createServer(app)

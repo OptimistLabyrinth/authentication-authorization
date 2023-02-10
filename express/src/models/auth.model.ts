@@ -11,7 +11,7 @@ const AuthSchema = new Schema<IAuth>({
   type: { type: Schema.Types.String, enum: Object.values(AuthTypes), required: true },
   createdAt: { type: Schema.Types.Date, default: Date.now },
   deletedAt: { type: Schema.Types.Date },
-})
+}, { collection: 'auths' })
 
 export type AuthModel = Model<IAuth>
 

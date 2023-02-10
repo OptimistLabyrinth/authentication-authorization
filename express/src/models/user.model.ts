@@ -1,7 +1,7 @@
-import { Connection, Model, ObjectId, Schema } from 'mongoose'
+import { Connection, Model, Schema, Types } from 'mongoose'
 
 type IUser = {
-  authId: ObjectId
+  authId: Types.ObjectId
   name: string
   createdAt: Date
   updatedAt: Date
@@ -14,7 +14,7 @@ const UserSchema = new Schema<IUser>({
   createdAt: { type: Schema.Types.Date, default: Date.now },
   updatedAt: { type: Schema.Types.Date, default: Date.now },
   deletedAt: { type: Schema.Types.Date },
-})
+}, { collection: 'users' })
 
 export type UserModel = Model<IUser>
 
