@@ -1,10 +1,10 @@
 import { AppError } from '../../../../error'
-import { SignInDto } from '../../application/dto/sign-in.dto'
+import { SignInRequestDto } from '../../application/sign-in/request.dto'
 
 export default class SignInValidator {
-  private readonly body: SignInDto
+  private readonly body: SignInRequestDto
 
-  constructor(body: SignInDto) {
+  constructor(body: SignInRequestDto) {
     this.body = body
   }
 

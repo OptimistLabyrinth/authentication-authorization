@@ -1,11 +1,10 @@
 import { Connection, Model, Schema, Types } from 'mongoose'
 
-type IUser = {
+export interface IUser {
   authId: Types.ObjectId
   name: string
   createdAt: Date
   updatedAt: Date
-  deletedAt?: Date
 }
 
 const UserSchema = new Schema<IUser>({
@@ -13,7 +12,6 @@ const UserSchema = new Schema<IUser>({
   name: { type: Schema.Types.String, required: true },
   createdAt: { type: Schema.Types.Date, default: Date.now },
   updatedAt: { type: Schema.Types.Date, default: Date.now },
-  deletedAt: { type: Schema.Types.Date },
 }, { collection: 'users' })
 
 export type UserModel = Model<IUser>

@@ -10,6 +10,11 @@ const userErrors = Object.freeze({
     10003,
     'password is too weak (minimum length: 8, at least one alphabet, at least one number)',
   ),
+  USER_DUPLICATE_EMAIL_EXIST: Err(
+    httpStatus.conflict,
+    10004,
+    'duplicate email is already registered',
+  ),
 })
 
 export default userErrors

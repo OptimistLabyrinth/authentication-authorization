@@ -1,12 +1,12 @@
 import validator from 'validator'
 import { AppError } from '../../../../error'
 import { validatePassword } from '../../../../utils/validate-internal'
-import { SignUpDto } from '../../application/dto/sign-up.dto'
+import { SignUpRequestDto } from '../../application/sign-up/request.dto'
 
 export default class SignUpValidator {
-  private readonly body: SignUpDto
+  private readonly body: SignUpRequestDto
 
-  constructor(body: SignUpDto) {
+  constructor(body: SignUpRequestDto) {
     this.body = body
   }
 

@@ -1,4 +1,4 @@
-export type SignInDto = {
+export type SignUpRequestDto = {
   email: string
   password: string
 }

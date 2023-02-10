@@ -1,16 +1,14 @@
 import { Connection, Model, Schema } from 'mongoose'
 import { AuthTypes } from '../types/auth'
 
-type IAuth = {
+export interface IAuth {
   type: typeof AuthTypes[keyof typeof AuthTypes]
   createdAt: Date
-  deletedAt?: Date
 }
 
 const AuthSchema = new Schema<IAuth>({
-  type: { type: Schema.Types.String, enum: Object.values(AuthTypes), required: true },
+  type: { type: Schema.Types.Number, enum: Object.values(AuthTypes), required: true },
   createdAt: { type: Schema.Types.Date, default: Date.now },
-  deletedAt: { type: Schema.Types.Date },
 }, { collection: 'auths' })
 
 export type AuthModel = Model<IAuth>
@@ -19,7 +17,7 @@ export const generateAuthModel = (
   conn: Connection,
 ): AuthModel => conn.model('Auth', AuthSchema, 'Auth')
 
-type IAuthEmail = IAuth & {
+interface IAuthEmail extends IAuth {
   email: string
   password: string
   salt: string

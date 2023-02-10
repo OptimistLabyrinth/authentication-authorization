@@ -1,25 +1,26 @@
-import { SignInDto } from './dto/sign-in.dto'
-import { SignUpDto } from './dto/sign-up.dto'
+import { IAuthService } from '../../auth/application/auth.service'
+import { SignInRequestDto } from './sign-in/request.dto'
+import { SignUpRequestDto } from './sign-up/request.dto'
 
 export interface IUserService {
-  signUp: (signUpDto: SignUpDto) => SignUpDto
-  signIn: (signInDto: SignInDto) => SignInDto
+  signIn(signInDto: SignInRequestDto): Promise<SignInRequestDto>
+  signUp(signUpDto: SignUpRequestDto): Promise<SignUpRequestDto>
 }
 
 export default class UserService implements IUserService {
-  signUp(signUpDto: SignUpDto) {
-    console.dir({
-      location: 'UserService-signUp()',
-      signUpDto,
-    })
+  private readonly authService: IAuthService
+
+  constructor(
+    authService: IAuthService,
+  ) {
+    this.authService = authService
+  }
+
+  async signUp(signUpDto: SignUpRequestDto) {
     return signUpDto
   }
 
-  signIn(signInDto: SignInDto) {
-    console.dir({
-      location: 'UserService-signIn()',
-      signInDto,
-    })
+  async signIn(signInDto: SignInRequestDto) {
     return signInDto
   }
 }
