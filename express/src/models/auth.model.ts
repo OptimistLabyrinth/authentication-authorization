@@ -17,7 +17,7 @@ export const generateAuthModel = (
   conn: Connection,
 ): AuthModel => conn.model('Auth', AuthSchema, 'Auth')
 
-interface IAuthEmail extends IAuth {
+export interface IAuthEmail extends IAuth {
   email: string
   password: string
   salt: string

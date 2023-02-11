@@ -7,11 +7,11 @@ export interface IDeletedUserService {
 }
 
 export default class DeletedUserService implements IDeletedUserService {
-  async existByEmail() {
+  async existByEmail(): Promise<boolean> {
     return false
   }
 
-  async create() {
+  async create(): Promise<IDeletedUser> {
     return {
       authId: new Types.ObjectId(),
       name: '',

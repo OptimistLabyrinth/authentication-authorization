@@ -7,11 +7,11 @@ export interface IAuthService {
 }
 
 export default class AuthService implements IAuthService {
-  async existByEmail() {
+  async existByEmail(): Promise<boolean> {
     return false
   }
 
-  async create() {
+  async create(): Promise<IAuth> {
     return {
       type: AuthTypes.email,
       createdAt: new Date(),

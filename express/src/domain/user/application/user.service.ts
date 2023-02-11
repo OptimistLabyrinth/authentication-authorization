@@ -16,11 +16,11 @@ export default class UserService implements IUserService {
     this.authService = authService
   }
 
-  async signUp(signUpDto: SignUpRequestDto) {
+  async signUp(signUpDto: SignUpRequestDto): Promise<SignInRequestDto> {
     return signUpDto
   }
 
-  async signIn(signInDto: SignInRequestDto) {
+  async signIn(signInDto: SignInRequestDto): Promise<SignUpRequestDto> {
     return signInDto
   }
 }

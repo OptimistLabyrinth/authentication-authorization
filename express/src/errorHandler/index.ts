@@ -15,5 +15,5 @@ export default function (
   }
   console.error(err)
   const status = 500
-  res.status(status).send({ status, description: 'internal server error' })
+  res.status(status).send({ code: status, description: 'internal server error' })
 }
