@@ -3,17 +3,13 @@ import routerMw from '../../../middleware/routerMw'
 import httpStatus from '../../../types/http-status'
 import getAuthService from '../../auth/application/auth.service'
 import getUserService, { IUserService } from '../application/user.service'
-import getSignInValidator from './validators/sign-in.validator'
-import getSignUpValidator from './validators/sign-up.validator'
+import { getSignInValidator } from './post-sign-in/request.dto'
+import { getSignUpValidator } from './post-sign-up/request.dto'
 
 const postSignUp = (userService: IUserService) => routerMw(async (req, res) => {
   const signUpDto = getSignUpValidator(req.body).validate()
   const result = await userService.signUp(signUpDto)
-  res.status(httpStatus.created)
-    .send({
-      message: 'user sign up',
-      result,
-    })
+  res.status(httpStatus.created).send({ message: 'user sign up', result })
 }, { stopNext: true })
 
 const postSignIn = (userService: IUserService) => routerMw(async (req, res) => {
@@ -24,7 +20,9 @@ const postSignIn = (userService: IUserService) => routerMw(async (req, res) => {
 
 const generateUserRouter = () => {
   const userRouter = express.Router()
-  const userService = getUserService(getAuthService())
+  const userService = getUserService(
+    getAuthService(),
+  )
 
   userRouter.post('/sign-up', postSignUp(userService))
   userRouter.post('/sign-in', postSignIn(userService))

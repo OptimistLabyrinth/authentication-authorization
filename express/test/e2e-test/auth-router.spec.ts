@@ -1,14 +1,18 @@
 import supertest, { Request } from 'supertest'
-import { initializeApp } from '../../src/app'
+import { cleanUpServer, getApp, setupServer } from './helper'
 
 const routerBase = '/auth'
 
 describe(`e2e test for ${routerBase} router`, () => {
   let testAgent: supertest.SuperTest<Request>
 
-  beforeAll(() => {
-    const app = initializeApp()
+  beforeAll(async () => {
+    await setupServer()
+    const app = getApp()
     testAgent = supertest(app)
+  })
+  afterAll(async () => {
+    await cleanUpServer()
   })
 
   describe(`GET ${routerBase}`, () => {

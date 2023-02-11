@@ -1,4 +1,5 @@
-import { Connection, Model, Schema, Types } from 'mongoose'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Connection, Document, Model, Schema, Types } from 'mongoose'
 
 export interface IUser {
   authId: Types.ObjectId
@@ -15,5 +16,11 @@ const UserSchema = new Schema<IUser>({
 }, { collection: 'users' })
 
 export type UserModel = Model<IUser>
+
+export type UserDocument = Document<unknown, any, IUser>
+  & IUser
+  & {
+    _id: Types.ObjectId;
+  }
 
 export const generateUserModel = (conn: Connection): UserModel => conn.model('User', UserSchema)

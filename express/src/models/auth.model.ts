@@ -1,4 +1,5 @@
-import { Connection, Model, Schema } from 'mongoose'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Connection, Document, Model, Schema, Types } from 'mongoose'
 import { AuthTypes } from '../types/auth'
 
 export interface IAuth {
@@ -24,9 +25,15 @@ export interface IAuthEmail extends IAuth {
 }
 
 export const AuthEmailSchema = new Schema<IAuthEmail>({
-  email: { type: Schema.Types.String, required: true },
+  email: { type: Schema.Types.String, unique: true, required: true },
   password: { type: Schema.Types.String, required: true },
   salt: { type: Schema.Types.String, required: true },
 })
 
 export type AuthEmailModel = Model<IAuthEmail>
+
+export type AuthEmailDocument = Document<unknown, any, IAuthEmail>
+  & IAuthEmail
+  & {
+    _id: Types.ObjectId
+  }

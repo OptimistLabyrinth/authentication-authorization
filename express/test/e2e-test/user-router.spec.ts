@@ -2,21 +2,31 @@ import supertest, { Request } from 'supertest'
 import httpStatus from '../../src/types/http-status'
 import { UserModel } from '../../src/models/user.model'
 import { AppError } from '../../src/error'
-import { SignUpRequestDto } from '../../src/domain/user/application/sign-up/request.dto'
+import { SignUpRequestDto } from '../../src/domain/user/api/post-sign-up/request.dto'
+import { SignInRequestDto } from '../../src/domain/user/api/post-sign-in/request.dto'
+import { AuthModel } from '../../src/models/auth.model'
+import { DeletedAuthModel } from '../../src/models/delete-auth.model'
+import { DeletedUserModel } from '../../src/models/deleted-user.model'
 import { setupServer, cleanUpServer, getModels, getApp } from './helper'
 
 const routerBase = '/user'
 
 describe(`e2e test for ${routerBase}`, () => {
   let testAgent: supertest.SuperTest<Request>
+  let Auth: AuthModel
   let User: UserModel
+  let DeletedAuth: DeletedAuthModel
+  let DeletedUser: DeletedUserModel
 
   beforeAll(async () => {
     await setupServer()
     const app = getApp()
     testAgent = supertest(app)
     const allModels = getModels()
+    Auth = allModels.Auth
     User = allModels.User
+    DeletedAuth = allModels.DeletedAuth
+    DeletedUser = allModels.DeletedUser
   })
   afterAll(async () => {
     await cleanUpServer()
@@ -34,19 +44,22 @@ describe(`e2e test for ${routerBase}`, () => {
     param: Partial<SignUpRequestDto>,
   ) => agent.post(`${routerBase}/sign-in`).send(param)
 
-  const deleteUsers = async () => User.deleteMany()
-  const deleteAllDocuments = async () => {
-    await deleteUsers()
-  }
+  const deleteAllDocuments = async () => Promise.all([
+    User.deleteMany(),
+    Auth.deleteMany(),
+    DeletedAuth.deleteMany(),
+    DeletedUser.deleteMany(),
+  ])
 
   describe(`POST ${routerBase}/sign-up`, () => {
-    beforeAll(deleteAllDocuments)
+    beforeEach(deleteAllDocuments)
 
-    test('success on sign up', async () => {
+    test('success on sign up using email, password', async () => {
       // arrange
       const signUpArgs: SignUpRequestDto = {
         email: 'test-user@email.com',
         password: 'abcd1234@!',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -55,13 +68,15 @@ describe(`e2e test for ${routerBase}`, () => {
       const { message, result } = body
       expect(response.statusCode).toBe(httpStatus.created)
       expect(message).toEqual('user sign up')
+      expect(result.authType).toBe('email')
       expect(result.email).toEqual(signUpArgs.email)
-      expect(result.password).toEqual(signUpArgs.password)
+      expect(result.name).toEqual(signUpArgs.name)
     })
     test('failure on sign up when email is missing', async () => {
       // arrange
       const signUpArgs: Partial<SignUpRequestDto> = {
         password: 'abcd1234@!',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -75,6 +90,7 @@ describe(`e2e test for ${routerBase}`, () => {
       const signUpArgs: SignUpRequestDto = {
         email: 'email-address',
         password: 'abcd1234@!',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -87,6 +103,7 @@ describe(`e2e test for ${routerBase}`, () => {
       // arrange
       const signUpArgs: Partial<SignUpRequestDto> = {
         email: 'test-user@email.com',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -100,6 +117,7 @@ describe(`e2e test for ${routerBase}`, () => {
       const signUpArgs: SignUpRequestDto = {
         email: 'test-user@email.com',
         password: 'pwd123!',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -113,6 +131,7 @@ describe(`e2e test for ${routerBase}`, () => {
       const signUpArgs: SignUpRequestDto = {
         email: 'test-user@email.com',
         password: '111234@!',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -126,6 +145,7 @@ describe(`e2e test for ${routerBase}`, () => {
       const signUpArgs: SignUpRequestDto = {
         email: 'test-user@email.com',
         password: 'abcd1234',
+        name: 'test-user',
       }
       // act
       const response = await userSignUp(testAgent)(signUpArgs)
@@ -134,12 +154,41 @@ describe(`e2e test for ${routerBase}`, () => {
       expect(response.statusCode).toBe(httpStatus.preconditionFailed)
       expect(body.code).toBe(AppError.USER_PASSWORD_INVALID.code)
     })
+    test('failure on sign up when name is missing', async () => {
+      // arrange
+      const signUpArgs: Partial<SignUpRequestDto> = {
+        email: 'test-user@email.com',
+        password: 'abcd1234@!',
+      }
+      // act
+      const response = await userSignUp(testAgent)(signUpArgs)
+      // assert
+      const { body } = response
+      expect(response.statusCode).toBe(httpStatus.preconditionFailed)
+      expect(body.code).toBe(AppError.USER_NAME_MISSING.code)
+    })
+    test('failure on sign up when name is empty after trim', async () => {
+      // arrange
+      const signUpArgs: Partial<SignUpRequestDto> = {
+        email: 'test-user@email.com',
+        password: 'abcd1234@!',
+        name: '    ',
+      }
+      // act
+      const response = await userSignUp(testAgent)(signUpArgs)
+      // assert
+      const { body } = response
+      expect(response.statusCode).toBe(httpStatus.preconditionFailed)
+      expect(body.code).toBe(AppError.USER_NAME_TOO_SHORT.code)
+    })
   })
 
   describe(`POST ${routerBase}/sign-in`, () => {
+    beforeEach(deleteAllDocuments)
+
     test('success on sign in', async () => {
       // arrange
-      const signInArgs: SignUpRequestDto = {
+      const signInArgs: SignInRequestDto = {
         email: 'test-user@email.com',
         password: 'abcd1234@!',
       }
@@ -155,7 +204,7 @@ describe(`e2e test for ${routerBase}`, () => {
     })
     test('failure on sign in when email is missing', async () => {
       // arrange
-      const signInArgs: Partial<SignUpRequestDto> = {
+      const signInArgs: Partial<SignInRequestDto> = {
         password: 'abcd1234@!',
       }
       // act
@@ -167,7 +216,7 @@ describe(`e2e test for ${routerBase}`, () => {
     })
     test('failure on sign in when password is missing', async () => {
       // arrange
-      const signInArgs: Partial<SignUpRequestDto> = {
+      const signInArgs: Partial<SignInRequestDto> = {
         email: 'test-user@email.com',
       }
       // act

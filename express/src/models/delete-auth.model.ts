@@ -1,4 +1,5 @@
-import { Connection, Model, Schema } from 'mongoose'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Connection, Document, Model, Schema, Types } from 'mongoose'
 import { AuthTypes } from '../types/auth'
 
 export interface IDeletedAuth {
@@ -30,3 +31,9 @@ export const DeletedAuthEmailSchema = new Schema<IDeletedAuthEmail>({
 })
 
 export type DeletedAuthEmailModel = Model<IDeletedAuthEmail>
+
+export type DeletedAuthEmailDocument = Document<unknown, any, IDeletedAuth>
+  & IDeletedAuth
+  & {
+    _id: Types.ObjectId;
+  }

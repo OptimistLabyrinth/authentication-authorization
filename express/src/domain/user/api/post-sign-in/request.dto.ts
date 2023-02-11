@@ -1,7 +1,11 @@
 import { AppError } from '../../../../error'
-import { SignInRequestDto } from '../../application/sign-in/request.dto'
 
-const getSignInValidator = (body: SignInRequestDto) => {
+export type SignInRequestDto = {
+  email: string
+  password: string
+}
+
+export const getSignInValidator = (body: SignInRequestDto) => {
   return {
     validate() {
       const { email, password } = body
@@ -15,5 +19,3 @@ const getSignInValidator = (body: SignInRequestDto) => {
     },
   }
 }
-
-export default getSignInValidator

@@ -8,10 +8,10 @@ export interface IDeletedUserService {
 
 const getDeletedUserService = (): IDeletedUserService => {
   return {
-    async existByEmail(): Promise<boolean> {
+    async existByEmail() {
       return false
     },
-    async create(): Promise<IDeletedUser> {
+    async create() {
       return {
         authId: new Types.ObjectId(),
         name: '',

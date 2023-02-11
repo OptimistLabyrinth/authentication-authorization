@@ -1,5 +1,5 @@
 import { Types } from 'mongoose'
-import { IUser } from '../../../models/user.model'
+import { UserDocument } from '../../../models/user.model'
 
 export type CreateParam = {
   authId: Types.ObjectId
@@ -7,5 +7,5 @@ export type CreateParam = {
 }
 
 export interface IUserRepository {
-  create(param: CreateParam): Promise<IUser>
+  create(param: CreateParam): Promise<UserDocument>
 }

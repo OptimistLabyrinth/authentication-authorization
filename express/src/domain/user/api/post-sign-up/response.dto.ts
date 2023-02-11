@@ -14,12 +14,8 @@ export const createSignUpResponseDto = (
   auth: IAuth,
   user: IUser,
 ): SignUpResponseDto => {
-  let email = ''
-  // eslint-disable-next-line no-extra-parens
-  if ((auth as IAuthEmail).email) {
-    const authEmail = auth as IAuthEmail
-    email = authEmail.email
-  }
+  const authEmail = auth as IAuthEmail
+  const email = authEmail.email
 
   return {
     authType: getAuthTypeKey(auth.type),
