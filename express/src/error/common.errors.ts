@@ -7,6 +7,11 @@ const commonErrors = Object.freeze({
     10001,
     'error occurred while hashing password',
   ),
+  COMMON_MONGOOSE_TRANSACTION_ERROR: Err(
+    httpStatus.internalServerError,
+    10002,
+    'error occurred inside mongoose transaction',
+  ),
 })
 
 export default commonErrors

@@ -28,7 +28,7 @@ export const AuthEmailSchema = new Schema<IAuthEmail>({
   email: { type: Schema.Types.String, unique: true, required: true },
   password: { type: Schema.Types.String, required: true },
   salt: { type: Schema.Types.String, required: true },
-})
+}, { collection: 'auths' })
 
 export type AuthEmailModel = Model<IAuthEmail>
 

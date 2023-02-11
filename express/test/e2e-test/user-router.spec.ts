@@ -7,7 +7,8 @@ import { SignInRequestDto } from '../../src/domain/user/api/post-sign-in/request
 import { AuthModel } from '../../src/models/auth.model'
 import { DeletedAuthModel } from '../../src/models/delete-auth.model'
 import { DeletedUserModel } from '../../src/models/deleted-user.model'
-import { setupServer, cleanUpServer, getModels, getApp } from './helper'
+import { getModels } from '../../src/models'
+import { setupServer, cleanUpServer, getApp } from './helper'
 
 const routerBase = '/user'
 
@@ -50,6 +51,14 @@ describe(`e2e test for ${routerBase}`, () => {
     DeletedAuth.deleteMany(),
     DeletedUser.deleteMany(),
   ])
+
+  // describe('basic test suite', () => {
+  //   beforeEach(deleteAllDocuments)
+  //
+  //   test('1 + 1 = 2', () => {
+  //     expect(1 + 1).toBe(2)
+  //   })
+  // })
 
   describe(`POST ${routerBase}/sign-up`, () => {
     beforeEach(deleteAllDocuments)

@@ -1,21 +1,26 @@
-import { IDeletedAuth } from '../../../models/delete-auth.model'
-import { AuthTypes } from '../../../types/auth'
+import { ClientSession } from 'mongoose'
+import { AuthEmailDocument } from '../../../models/auth.model'
+import { DeletedAuthEmailDocument } from '../../../models/delete-auth.model'
+import { IAuthService } from '../../auth/application/auth.service'
+import getDeletedAuthRepository from '../infra/deleted-auth.repository'
+import { IDeletedAuthRepository } from './deleted-auth.repository.interface'
 
 export interface IDeletedAuthService {
-  existByEmail(email: string): Promise<boolean>
-  create(): Promise<IDeletedAuth>
+  createAuthEmail(
+    authEmail: AuthEmailDocument,
+    session?: ClientSession
+  ): Promise<DeletedAuthEmailDocument>
 }
 
-const getDeletedAuthService = (): IDeletedAuthService => {
+const getDeletedAuthService = (
+  authService: IAuthService,
+  deletedAuthRepositoryOrUndefined?: IDeletedAuthRepository,
+): IDeletedAuthService => {
+  const deletedAuthRepository = deletedAuthRepositoryOrUndefined ?? getDeletedAuthRepository()
+
   return {
-    async existByEmail() {
-      return true
-    },
-    async create() {
-      return {
-        type: AuthTypes.email,
-        deletedAt: new Date(),
-      }
+    async createAuthEmail(authEmail, session) {
+      return deletedAuthRepository.createAuthEmail(authEmail, session)
     },
   }
 }

@@ -1,27 +1,66 @@
-import { AuthEmailDocument } from '../../../models/auth.model'
+import { ClientSession, Types } from 'mongoose'
+import { AppError } from '../../../error'
+import { AuthEmailDocument, IAuth } from '../../../models/auth.model'
 import { hashPassword } from '../../../utils/password'
 import getAuthRepository from '../infra/auth.repository'
 import { IAuthRepository } from './auth.repository.interface'
 
+type AuthServiceCreateAuthEmail = {
+  email: string
+  password: string
+}
+
 export interface IAuthService {
-  existByEmail(email: string): Promise<boolean>
-  createAuthEmail(email: string, password: string): Promise<AuthEmailDocument>
+  existByEmail(
+    email: string,
+    session?: ClientSession
+  ): Promise<boolean>
+  createAuthEmail(
+    param: AuthServiceCreateAuthEmail,
+    session?: ClientSession
+  ): Promise<AuthEmailDocument>
+  findAuthById(
+    authId: Types.ObjectId,
+    session?: ClientSession
+  ): Promise<IAuth>
+  findAuthEmailById(
+    authId: Types.ObjectId,
+    session?: ClientSession
+  ): Promise<AuthEmailDocument>
 }
 
 const getAuthService = (authRepositoryOrUndefined?: IAuthRepository): IAuthService => {
   const authRepository = authRepositoryOrUndefined ?? getAuthRepository()
 
   return {
-    async existByEmail(email) {
-      return authRepository.existByEmail(email)
+    async existByEmail(email, session) {
+      return authRepository.existByEmail(email, session)
     },
-    async createAuthEmail(email: string, password: string) {
+    async createAuthEmail(param, session) {
+      const { email, password } = param
       const hashResult = await hashPassword(password)
-      return authRepository.createAuthEmail({
-        email,
-        password: hashResult.password,
-        salt: hashResult.salt,
-      })
+      return authRepository.createAuthEmail(
+        {
+          email,
+          password: hashResult.password,
+          salt: hashResult.salt,
+        },
+        session,
+      )
+    },
+    async findAuthById(authId, session) {
+      const found = await authRepository.findAuthById(authId, session)
+      if (!found) {
+        throw AppError.AUTH_NOT_FOUND
+      }
+      return found
+    },
+    async findAuthEmailById(authId, session) {
+      const found = await authRepository.findAuthEmailById(authId, session)
+      if (!found) {
+        throw AppError.AUTH_AUTH_EMAIL_NOT_FOUND
+      }
+      return found
     },
   }
 }

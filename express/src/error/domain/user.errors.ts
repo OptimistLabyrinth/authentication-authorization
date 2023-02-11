@@ -12,11 +12,13 @@ const userErrors = Object.freeze({
   ),
   USER_NAME_MISSING: Err(httpStatus.preconditionFailed, 20005, 'name is missing'),
   USER_NAME_TOO_SHORT: Err(httpStatus.preconditionFailed, 20006, 'name is too short'),
+
   USER_DUPLICATE_EMAIL_EXIST: Err(
     httpStatus.conflict,
     20101,
     'duplicate email is already registered',
   ),
+  USER_NOT_FOUND: Err(httpStatus.notFound, 20102, 'user not found'),
 })
 
 export default userErrors

@@ -1,8 +1,8 @@
 import http from 'http'
 import dotenv from 'dotenv'
-import mongoose from 'mongoose'
 import { initializeApp } from './app'
-import { getConfig, setConfig } from './conf/config'
+import { setConfig } from './conf/config'
+import { mongooseConnect } from './mongoose-utils/conn'
 import { initializeAllModels } from './models'
 
 dotenv.config()
@@ -12,12 +12,10 @@ const port = process.env.PORT ?? 3500
 export const startServer = async () => {
   // * setup config
   setConfig()
-  const config = getConfig()
 
   // * setup MongoDB
-  mongoose.set('strictQuery', false)
-  const { connection: mongoDbConnection } = await mongoose.connect(config.mongodbConnectionUri)
-  initializeAllModels(mongoDbConnection)
+  const connection = await mongooseConnect()
+  initializeAllModels(connection)
 
   // * setup express.Application
   const app = initializeApp()

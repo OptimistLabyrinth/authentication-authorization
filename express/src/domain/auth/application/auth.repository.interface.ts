@@ -1,12 +1,27 @@
-import { AuthEmailDocument } from '../../../models/auth.model'
+import { ClientSession, Types } from 'mongoose'
+import { AuthEmailDocument, IAuth } from '../../../models/auth.model'
 
-export type CreateAuthEmailDto = {
+type AuthRepositoryCreateAuthEmailDto = {
   email: string
   password: string
   salt: string
 }
 
 export interface IAuthRepository {
-  existByEmail(email: string): Promise<boolean>
-  createAuthEmail(params: CreateAuthEmailDto): Promise<AuthEmailDocument>
+  existByEmail(
+    email: string,
+    session?: ClientSession
+  ): Promise<boolean>
+  createAuthEmail(
+    params: AuthRepositoryCreateAuthEmailDto,
+    session?: ClientSession
+  ): Promise<AuthEmailDocument>
+  findAuthById(
+    authId: Types.ObjectId,
+    session?: ClientSession
+  ): Promise<IAuth | null>
+  findAuthEmailById(
+    authId: Types.ObjectId,
+    session?: ClientSession
+  ): Promise<AuthEmailDocument | null>
 }

@@ -28,7 +28,7 @@ export const DeletedAuthEmailSchema = new Schema<IDeletedAuthEmail>({
   email: { type: Schema.Types.String, required: true },
   password: { type: Schema.Types.String, required: true },
   salt: { type: Schema.Types.String, required: true },
-})
+}, { collection: 'deleted_auths' })
 
 export type DeletedAuthEmailModel = Model<IDeletedAuthEmail>
 

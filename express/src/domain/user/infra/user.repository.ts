@@ -5,11 +5,18 @@ const getUserRepository = (): IUserRepository => {
   const { User } = getModels()
 
   return {
-    async create(param: CreateParam) {
-      return User.create({
-        authId: param.authId,
-        name: param.name,
+    async create(param: CreateParam, session) {
+      const user = new User({
+        ...param,
       })
+      return user.save({ session: session ?? null })
+    },
+    async findById(userId, session) {
+      return User.findById(
+        userId,
+        {},
+        { session: session ?? null },
+      )
     },
   }
 }
