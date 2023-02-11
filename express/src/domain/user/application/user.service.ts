@@ -7,20 +7,15 @@ export interface IUserService {
   signUp(signUpDto: SignUpRequestDto): Promise<SignUpRequestDto>
 }
 
-export default class UserService implements IUserService {
-  private readonly authService: IAuthService
-
-  constructor(
-    authService: IAuthService,
-  ) {
-    this.authService = authService
-  }
-
-  async signUp(signUpDto: SignUpRequestDto): Promise<SignInRequestDto> {
-    return signUpDto
-  }
-
-  async signIn(signInDto: SignInRequestDto): Promise<SignUpRequestDto> {
-    return signInDto
+const getUserService = (authService: IAuthService): IUserService => {
+  return {
+    async signUp(signUpDto: SignUpRequestDto): Promise<SignInRequestDto> {
+      return signUpDto
+    },
+    async signIn(signInDto: SignInRequestDto): Promise<SignUpRequestDto> {
+      return signInDto
+    },
   }
 }
+
+export default getUserService

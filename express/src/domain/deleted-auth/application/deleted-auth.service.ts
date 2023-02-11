@@ -6,15 +6,18 @@ export interface IDeletedAuthService {
   create(): Promise<IDeletedAuth>
 }
 
-export default class DeletedAuthService implements IDeletedAuthService {
-  async existByEmail(): Promise<boolean> {
-    return true
-  }
-
-  async create(): Promise<IDeletedAuth> {
-    return {
-      type: AuthTypes.email,
-      deletedAt: new Date(),
-    }
+const getDeletedAuthService = (): IDeletedAuthService => {
+  return {
+    async existByEmail(): Promise<boolean> {
+      return true
+    },
+    async create(): Promise<IDeletedAuth> {
+      return {
+        type: AuthTypes.email,
+        deletedAt: new Date(),
+      }
+    },
   }
 }
+
+export default getDeletedAuthService

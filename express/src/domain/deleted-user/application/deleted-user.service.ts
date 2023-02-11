@@ -6,16 +6,19 @@ export interface IDeletedUserService {
   create(): Promise<IDeletedUser>
 }
 
-export default class DeletedUserService implements IDeletedUserService {
-  async existByEmail(): Promise<boolean> {
-    return false
-  }
-
-  async create(): Promise<IDeletedUser> {
-    return {
-      authId: new Types.ObjectId(),
-      name: '',
-      deletedAt: new Date(),
-    }
+const getDeletedUserService = (): IDeletedUserService => {
+  return {
+    async existByEmail(): Promise<boolean> {
+      return false
+    },
+    async create(): Promise<IDeletedUser> {
+      return {
+        authId: new Types.ObjectId(),
+        name: '',
+        deletedAt: new Date(),
+      }
+    },
   }
 }
+
+export default getDeletedUserService
