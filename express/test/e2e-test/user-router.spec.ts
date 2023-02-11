@@ -8,6 +8,7 @@ import { AuthModel } from '../../src/models/auth.model'
 import { DeletedAuthModel } from '../../src/models/delete-auth.model'
 import { DeletedUserModel } from '../../src/models/deleted-user.model'
 import { getModels } from '../../src/models'
+import { jwtUserSign, jwtUserVerify, UserSignPayload } from '../../src/utils/jwt-user'
 import { setupServer, cleanUpServer, getApp } from './helper'
 
 const routerBase = '/user'
@@ -234,6 +235,24 @@ describe(`e2e test for ${routerBase}`, () => {
       const { body } = response
       expect(response.statusCode).toBe(httpStatus.preconditionFailed)
       expect(body.code).toBe(AppError.USER_PASSWORD_MISSING.code)
+    })
+  })
+
+  describe('jwt sign, jwt verify', () => {
+    const signPayload: UserSignPayload = {
+      user_cache_key: 'test user cache key',
+    }
+    let token: string
+
+    test('sign - encode', async () => {
+      token = await jwtUserSign(signPayload)
+      expect(typeof token).toBe('string')
+    })
+
+    test('verify - decode', async () => {
+      const verifyPayload = await jwtUserVerify(token)
+      expect(typeof verifyPayload).toBe('object')
+      expect(verifyPayload.user_cache_key).toEqual(signPayload.user_cache_key)
     })
   })
 })
