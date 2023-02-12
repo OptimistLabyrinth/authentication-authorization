@@ -1,5 +1,5 @@
 import { ClientSession, Types } from 'mongoose'
-import { AuthEmailDocument, IAuth } from '../../../models/auth.model'
+import { IAuth, IAuthEmail } from '../../../models/auth.model'
 
 type AuthRepositoryCreateAuthEmailDto = {
   email: string
@@ -15,7 +15,7 @@ export interface IAuthRepository {
   createAuthEmail(
     params: AuthRepositoryCreateAuthEmailDto,
     session?: ClientSession
-  ): Promise<AuthEmailDocument>
+  ): Promise<IAuthEmail>
   findAuthById(
     authId: Types.ObjectId,
     session?: ClientSession
@@ -23,5 +23,5 @@ export interface IAuthRepository {
   findAuthEmailById(
     authId: Types.ObjectId,
     session?: ClientSession
-  ): Promise<AuthEmailDocument | null>
+  ): Promise<IAuthEmail | null>
 }

@@ -1,17 +1,18 @@
 const OFF = 'off'
 const WARN = 'warn'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ERROR = 'error'
 const defaultLevelLayoutFormatting = WARN
 
 const rulesEslintLayoutFormatting = {
-  // Eslint: Layout & Formatting -> https://eslint.org/docs/latest/rules/#layout--formatting
+  // * Eslint: Layout & Formatting -> https://eslint.org/docs/latest/rules/#layout--formatting
   'array-bracket-newline': [
     defaultLevelLayoutFormatting,
     {
       'multiline': true,
     },
   ],
-  // prettier: bracketSpacing
+  // * prettier: bracketSpacing
   'array-bracket-spacing': [ defaultLevelLayoutFormatting, 'always' ],
   'array-element-newline': [
     defaultLevelLayoutFormatting,
@@ -33,7 +34,7 @@ const rulesEslintLayoutFormatting = {
       'allowSingleLine': false,
     },
   ],
-  // prettier: trailingComma
+  // * prettier: trailingComma
   'comma-dangle': [ defaultLevelLayoutFormatting, 'always-multiline' ],
   'comma-spacing': [
     defaultLevelLayoutFormatting,
@@ -131,7 +132,7 @@ const rulesEslintLayoutFormatting = {
       'position': 'above',
     },
   ],
-  // prettier: endOfLine
+  // * prettier: endOfLine
   'linebreak-style': [
     defaultLevelLayoutFormatting,
     process.platform === 'win32' ? 'windows' : 'unix',
@@ -160,12 +161,12 @@ const rulesEslintLayoutFormatting = {
       'exceptAfterSingleLine': true,
     },
   ],
-  // prettier: printWidth
+  // * prettier: printWidth
   'max-len': [
     defaultLevelLayoutFormatting,
     {
       'code': 120,
-      // prettier: tabWidth
+      // * prettier: tabWidth
       'tabWidth': 2,
       'ignoreComments': true,
       'ignoreTrailingComments': true,
@@ -255,7 +256,7 @@ const rulesEslintLayoutFormatting = {
       'allowUnboundThis': false,
     },
   ],
-  // prettier: singleQuote
+  // * prettier: singleQuote
   'quotes': [
     defaultLevelLayoutFormatting,
     'single',
@@ -264,7 +265,7 @@ const rulesEslintLayoutFormatting = {
     },
   ],
   'rest-spread-spacing': [ defaultLevelLayoutFormatting, 'never' ],
-  // prettier: semi
+  // * prettier: semi
   'semi': [
     defaultLevelLayoutFormatting,
     'never',
@@ -324,7 +325,7 @@ const rulesEslintLayoutFormatting = {
 }
 
 const rulesTypescriptEslint = {
-  // Typescript Eslint Rules -> https://typescript-eslint.io/rules/
+  // * Typescript Eslint Rules -> https://typescript-eslint.io/rules/
   '@typescript-eslint/ban-ts-comment': OFF,
   '@typescript-eslint/type-annotation-spacing': [
     WARN,

@@ -73,6 +73,6 @@ const httpStatus = Object.freeze({
   networkAuthenticationRequired: 511,
 })
 
-export type statusType = typeof httpStatus[keyof typeof httpStatus]
+export type HttpStatus = typeof httpStatus[keyof typeof httpStatus]
 
 export default httpStatus

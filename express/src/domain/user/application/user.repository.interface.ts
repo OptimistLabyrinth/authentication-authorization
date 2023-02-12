@@ -1,5 +1,5 @@
 import { ClientSession, Types } from 'mongoose'
-import { UserDocument } from '../../../models/user.model'
+import { IUser } from '../../../models/user.model'
 
 export type CreateParam = {
   authId: Types.ObjectId
@@ -7,6 +7,6 @@ export type CreateParam = {
 }
 
 export interface IUserRepository {
-  create(param: CreateParam, session?: ClientSession): Promise<UserDocument>
-  findById(userId: Types.ObjectId, session?: ClientSession): Promise<UserDocument | null>
+  create(param: CreateParam, session?: ClientSession): Promise<IUser>
+  findById(userId: Types.ObjectId, session?: ClientSession): Promise<IUser | null>
 }

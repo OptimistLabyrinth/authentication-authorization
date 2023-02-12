@@ -10,13 +10,14 @@ import {
   SignUpResponseDto,
 } from '../api/post-sign-up/response.dto'
 import { runWithTransaction, TransactionalFunction } from '../../../mongoose-utils/transaction'
-import { UserDocument } from '../../../models/user.model'
+import { IUser } from '../../../models/user.model'
+import { AuthEmailDocument } from '../../../models/auth.model'
 import { IUserRepository } from './user.repository.interface'
 
 export interface IUserService {
   signUp(signUpDto: SignUpRequestDto): Promise<SignUpResponseDto>
   signIn(signInDto: SignInRequestDto): Promise<SignInRequestDto>
-  findById(userId: Types.ObjectId, session?: ClientSession): Promise<UserDocument>
+  findById(userId: Types.ObjectId, session?: ClientSession): Promise<IUser>
 }
 
 const getUserService = (
@@ -34,9 +35,10 @@ const getUserService = (
       }
       const func: TransactionalFunction<CreateSignUpResponseDtoParam> = async (session) => {
         const authEmail = await authService.createAuthEmail({ email, password }, session)
+        const authEmailDocument = authEmail as AuthEmailDocument
         const user = await userRepository.create(
           {
-            authId: authEmail._id,
+            authId: authEmailDocument._id,
             name,
           },
           session,

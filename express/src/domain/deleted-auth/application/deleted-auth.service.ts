@@ -1,19 +1,17 @@
 import { ClientSession } from 'mongoose'
-import { AuthEmailDocument } from '../../../models/auth.model'
-import { DeletedAuthEmailDocument } from '../../../models/delete-auth.model'
-import { IAuthService } from '../../auth/application/auth.service'
+import { IAuthEmail } from '../../../models/auth.model'
+import { IDeletedAuth } from '../../../models/delete-auth.model'
 import getDeletedAuthRepository from '../infra/deleted-auth.repository'
 import { IDeletedAuthRepository } from './deleted-auth.repository.interface'
 
 export interface IDeletedAuthService {
   createAuthEmail(
-    authEmail: AuthEmailDocument,
+    authEmail: IAuthEmail,
     session?: ClientSession
-  ): Promise<DeletedAuthEmailDocument>
+  ): Promise<IDeletedAuth>
 }
 
 const getDeletedAuthService = (
-  authService: IAuthService,
   deletedAuthRepositoryOrUndefined?: IDeletedAuthRepository,
 ): IDeletedAuthService => {
   const deletedAuthRepository = deletedAuthRepositoryOrUndefined ?? getDeletedAuthRepository()

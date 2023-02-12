@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 db.createUser(
   {
     user: 'normal_user',

@@ -14,6 +14,12 @@ const AuthSchema = new Schema<IAuth>({
 
 export type AuthModel = Model<IAuth>
 
+export type AuthDocument = Document<unknown, any, IAuth>
+  & IAuth
+  & {
+    _id: Types.ObjectId
+  }
+
 export const generateAuthModel = (
   conn: Connection,
 ): AuthModel => conn.model('Auth', AuthSchema, 'Auth')

@@ -1,11 +1,11 @@
 import { ClientSession, Types } from 'mongoose'
-import { DeletedUserDocument } from '../../../models/deleted-user.model'
-import { UserDocument } from '../../../models/user.model'
+import { IDeletedUser } from '../../../models/deleted-user.model'
+import { IUser } from '../../../models/user.model'
 
 export interface IDeletedUserRepository {
   createUser(
     deletedAuthId: Types.ObjectId,
-    User: UserDocument,
+    User: IUser,
     session?: ClientSession
-  ): Promise<DeletedUserDocument>
+  ): Promise<IDeletedUser>
 }

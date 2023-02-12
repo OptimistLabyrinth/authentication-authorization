@@ -1,6 +1,6 @@
 import { ClientSession, Types } from 'mongoose'
 import { AppError } from '../../../error'
-import { AuthEmailDocument, IAuth } from '../../../models/auth.model'
+import { IAuth, IAuthEmail } from '../../../models/auth.model'
 import { hashPassword } from '../../../utils/password'
 import getAuthRepository from '../infra/auth.repository'
 import { IAuthRepository } from './auth.repository.interface'
@@ -18,7 +18,7 @@ export interface IAuthService {
   createAuthEmail(
     param: AuthServiceCreateAuthEmail,
     session?: ClientSession
-  ): Promise<AuthEmailDocument>
+  ): Promise<IAuthEmail>
   findAuthById(
     authId: Types.ObjectId,
     session?: ClientSession
@@ -26,7 +26,7 @@ export interface IAuthService {
   findAuthEmailById(
     authId: Types.ObjectId,
     session?: ClientSession
-  ): Promise<AuthEmailDocument>
+  ): Promise<IAuthEmail>
 }
 
 const getAuthService = (authRepositoryOrUndefined?: IAuthRepository): IAuthService => {

@@ -14,6 +14,12 @@ const DeletedAuthSchema = new Schema<IDeletedAuth>({
 
 export type DeletedAuthModel = Model<IDeletedAuth>
 
+export type DeletedAuthDocument = Document<unknown, any, IDeletedAuth>
+  & IDeletedAuth
+  & {
+    _id: Types.ObjectId;
+  }
+
 export const generateDeletedAuthModel = (
   conn: Connection,
 ): DeletedAuthModel => conn.model('DeletedAuth', DeletedAuthSchema)
@@ -32,8 +38,8 @@ export const DeletedAuthEmailSchema = new Schema<IDeletedAuthEmail>({
 
 export type DeletedAuthEmailModel = Model<IDeletedAuthEmail>
 
-export type DeletedAuthEmailDocument = Document<unknown, any, IDeletedAuth>
-  & IDeletedAuth
+export type DeletedAuthEmailDocument = Document<unknown, any, IDeletedAuthEmail>
+  & IDeletedAuthEmail
   & {
     _id: Types.ObjectId;
   }

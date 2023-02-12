@@ -7,19 +7,19 @@ import { initializeAllModels } from '../../src/models'
 
 dotenv.config()
 
-const port = process.env.PORT ?? 3500
 let app: Application
 
 export const setupServer = async () => {
   // * setup config
   setConfig()
 
-  // * setup MongoDB
+  // * setup MongoDB, mongoose models
   const connection = await mongooseConnect()
   initializeAllModels(connection)
 
   // * setup Express.Application
   app = initializeApp()
+  const port = process.env.PORT ?? 3500
   app.set('port', port)
 }
 

@@ -13,7 +13,7 @@ export const startServer = async () => {
   // * setup config
   setConfig()
 
-  // * setup MongoDB
+  // * setup MongoDB, mongoose models
   const connection = await mongooseConnect()
   initializeAllModels(connection)
 

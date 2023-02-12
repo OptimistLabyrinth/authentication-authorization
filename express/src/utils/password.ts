@@ -2,10 +2,12 @@ import crypto from 'crypto'
 import { getConfig } from '../conf/config'
 import { AppError } from '../error'
 
-export const hashPassword = (password: string): Promise<{
+export type HashPasswordResult = {
   password: string
   salt: string
-}> => {
+}
+
+export const hashPassword = (password: string): Promise<HashPasswordResult> => {
   const config = getConfig()
   const salt = crypto.randomBytes(config.pbkdf2Length).toString('hex')
 

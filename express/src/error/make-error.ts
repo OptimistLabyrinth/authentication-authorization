@@ -1,12 +1,12 @@
-import { statusType } from '../types/http-status'
+import { HttpStatus } from '../types/http-status'
 
 export class ErrorDto extends Error {
-  readonly status: statusType
+  readonly status: HttpStatus
   readonly code: number
   readonly description: string
 
   constructor(
-    status: statusType,
+    status: HttpStatus,
     code: number,
     description: string,
   ) {
@@ -26,7 +26,7 @@ export class ErrorDto extends Error {
 }
 
 const makeError = (
-  status: statusType,
+  status: HttpStatus,
   code: number,
   description: string,
 ): ErrorDto => new ErrorDto(
