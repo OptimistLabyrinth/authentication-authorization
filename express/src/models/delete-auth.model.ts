@@ -3,11 +3,15 @@ import { Connection, Document, Model, Schema, Types } from 'mongoose'
 import { AuthTypes } from '../types/auth'
 
 export interface IDeletedAuth {
+  originalId: Types.ObjectId
+  deletedAuthId: Types.ObjectId
   type: typeof AuthTypes[keyof typeof AuthTypes]
   deletedAt: Date
 }
 
 const DeletedAuthSchema = new Schema<IDeletedAuth>({
+  originalId: { type: Schema.Types.ObjectId, required: true },
+  deletedAuthId: { type: Schema.Types.ObjectId, required: true },
   type: { type: Schema.Types.Number, enum: Object.values(AuthTypes), required: true },
   deletedAt: { type: Schema.Types.Date, default: Date.now },
 }, { collection: 'deleted_auths' })

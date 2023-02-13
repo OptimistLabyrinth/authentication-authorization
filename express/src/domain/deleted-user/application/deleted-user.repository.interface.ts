@@ -5,7 +5,7 @@ import { IUser } from '../../../models/user.model'
 export interface IDeletedUserRepository {
   createUser(
     deletedAuthId: Types.ObjectId,
-    User: IUser,
+    user: IUser,
     session?: ClientSession
   ): Promise<IDeletedUser>
 }

@@ -1,4 +1,5 @@
 import { getModels } from '../../../models'
+import { AuthEmailDocument } from '../../../models/auth.model'
 import { IDeletedAuthRepository } from '../application/deleted-auth.repository.interface'
 
 const getDeletedAuthRepository = (): IDeletedAuthRepository => {
@@ -6,8 +7,10 @@ const getDeletedAuthRepository = (): IDeletedAuthRepository => {
 
   return {
     async createAuthEmail(authEmail, session) {
-      const { type, email, password, salt } = authEmail
+      const authEmailDoc = authEmail as AuthEmailDocument
+      const { _id: originalId, type, email, password, salt } = authEmailDoc
       const deletedAuthEmail = new DeletedAuthEmail({
+        originalId,
         type,
         email,
         password,
