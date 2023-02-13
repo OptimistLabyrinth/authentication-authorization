@@ -7,10 +7,15 @@ const commonErrors = Object.freeze({
     10001,
     'error occurred while hashing password',
   ),
-  COMMON_MONGOOSE_TRANSACTION_ERROR: Err(
+  COMMON_MONGOOSE_ERROR_IN_WITH_TRANSACTION: Err(
     httpStatus.internalServerError,
     10002,
-    'error occurred inside mongoose transaction',
+    'error occurred inside mongoose withTransaction',
+  ),
+  COMMON_CANNOT_RETRIEVE_VALID_RESULT_FROM_TRANSACTION_FUNCTION: Err(
+    httpStatus.internalServerError,
+    10003,
+    'cannot retrieve valid result from transaction',
   ),
 })
 
