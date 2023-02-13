@@ -27,6 +27,14 @@ export interface IAuthService {
     authId: Types.ObjectId,
     session?: ClientSession
   ): Promise<IAuthEmail>
+  findAuthEmailByEmailOrNull(
+    email: string,
+    session?: ClientSession
+  ): Promise<IAuthEmail | null>
+  findAuthEmailByEmail(
+    email: string,
+    session?: ClientSession
+  ): Promise<IAuthEmail>
 }
 
 const getAuthService = (authRepositoryOrUndefined?: IAuthRepository): IAuthService => {
@@ -57,6 +65,16 @@ const getAuthService = (authRepositoryOrUndefined?: IAuthRepository): IAuthServi
     },
     async findAuthEmailById(authId, session) {
       const found = await authRepository.findAuthEmailById(authId, session)
+      if (!found) {
+        throw AppError.AUTH_AUTH_EMAIL_NOT_FOUND
+      }
+      return found
+    },
+    async findAuthEmailByEmailOrNull(email, session) {
+      return authRepository.findAuthEmailByEmail(email, session)
+    },
+    async findAuthEmailByEmail(email, session) {
+      const found = await this.findAuthEmailByEmailOrNull(email, session)
       if (!found) {
         throw AppError.AUTH_AUTH_EMAIL_NOT_FOUND
       }

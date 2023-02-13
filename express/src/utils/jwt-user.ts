@@ -1,22 +1,34 @@
 import jwt from 'jsonwebtoken'
 import { getConfig } from '../conf/config'
+import { TokenTypes } from '../types/token'
 
 export type UserSignPayload = {
-  user_cache_key: string
+  authId: string
+  userId: string
 }
 
 export type UserVerifyPayload = {
-  user_cache_key: string
+  authId: string
+  userId: string
   iat: number
   exp: number
 }
 
-export const jwtUserSign = (payload: UserSignPayload): Promise<string> => {
+export const jwtUserSign = (
+  payload: UserSignPayload,
+  tokenType: typeof TokenTypes[keyof typeof TokenTypes],
+): Promise<string> => {
   const config = getConfig()
+  let expiresIn = '300'
+  if (tokenType === TokenTypes.accessToken) {
+    expiresIn = config.jwtAccessExpiresIn
+  } else {
+    expiresIn = config.jwtRefreshExpiresIn
+  }
 
   return new Promise((resolve) => {
     const token = jwt.sign(payload, config.jwtSecret, {
-      expiresIn: config.jwtExpiresIn,
+      expiresIn,
       algorithm: config.jwtAlgorithm,
     })
     resolve(token)

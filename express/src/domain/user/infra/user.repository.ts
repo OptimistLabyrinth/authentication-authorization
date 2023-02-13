@@ -18,6 +18,13 @@ const getUserRepository = (): IUserRepository => {
         { session: session ?? null },
       )
     },
+    async findByAuthId(authId, session) {
+      return User.findOne(
+        { authId },
+        {},
+        { session: session ?? null },
+      )
+    },
   }
 }
 

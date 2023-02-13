@@ -9,4 +9,5 @@ export type CreateParam = {
 export interface IUserRepository {
   create(param: CreateParam, session?: ClientSession): Promise<IUser>
   findById(userId: Types.ObjectId, session?: ClientSession): Promise<IUser | null>
+  findByAuthId(authId: Types.ObjectId, session?: ClientSession): Promise<IUser | null>
 }

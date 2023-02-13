@@ -9,7 +9,8 @@ const configDefaultSettings: ConfigDefinition = {
   pbkdf2Length: 64,
   pbkdf2digest: 'sha512',
   jwtSecret: 'jwt_secret',
-  jwtExpiresIn: '1h',
+  jwtAccessExpiresIn: '5m',
+  jwtRefreshExpiresIn: '7 days',
   jwtAlgorithm: 'HS256',
 }
 
@@ -26,7 +27,8 @@ export const setConfig = (): void => {
       : configDefaultSettings.pbkdf2Length,
     pbkdf2digest: process.env.PBKDF2_DIGEST ?? configDefaultSettings.pbkdf2digest,
     jwtSecret: process.env.JWT_SECRET ?? configDefaultSettings.jwtSecret,
-    jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? configDefaultSettings.jwtExpiresIn,
+    jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? configDefaultSettings.jwtAccessExpiresIn,
+    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN ?? configDefaultSettings.jwtRefreshExpiresIn,
     jwtAlgorithm: process.env.JWT_ALGORITHM as jwt.Algorithm ?? configDefaultSettings.jwtAlgorithm,
   }
 }

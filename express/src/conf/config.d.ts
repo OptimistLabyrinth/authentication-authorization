@@ -6,6 +6,7 @@ export type ConfigDefinition = {
   pbkdf2Length: number
   pbkdf2digest: string
   jwtSecret: string
-  jwtExpiresIn: string
+  jwtAccessExpiresIn: string
+  jwtRefreshExpiresIn: string
   jwtAlgorithm: jwt.Algorithm
 }

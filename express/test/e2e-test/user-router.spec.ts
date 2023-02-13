@@ -8,7 +8,6 @@ import { AuthModel } from '../../src/models/auth.model'
 import { DeletedAuthModel } from '../../src/models/delete-auth.model'
 import { DeletedUserModel } from '../../src/models/deleted-user.model'
 import { getModels } from '../../src/models'
-import { jwtUserSign, jwtUserVerify, UserSignPayload } from '../../src/utils/jwt-user'
 import { setupServer, cleanUpServer, getApp } from './helper'
 
 const routerBase = '/user'
@@ -194,9 +193,24 @@ describe(`e2e test for ${routerBase}`, () => {
   })
 
   describe(`POST ${routerBase}/sign-in`, () => {
-    beforeEach(deleteAllDocuments)
+    const signUpArgs: SignUpRequestDto = {
+      email: 'test-user@email.com',
+      password: 'abcd1234@!',
+      name: 'test-user',
+    }
+
+    const signUpUserForTest = async () => {
+      await userSignUp(testAgent)(signUpArgs)
+    }
+
+    beforeEach(async () => {
+      await deleteAllDocuments()
+      await signUpUserForTest()
+    })
 
     test('success on sign in', async () => {
+      // arrange
+      await signUpUserForTest()
       // arrange
       const signInArgs: SignInRequestDto = {
         email: 'test-user@email.com',
@@ -209,8 +223,11 @@ describe(`e2e test for ${routerBase}`, () => {
       const { message, result } = body
       expect(response.statusCode).toBe(httpStatus.ok)
       expect(message).toEqual('user sign in')
-      expect(result.email).toEqual(signInArgs.email)
-      expect(result.password).toEqual(signInArgs.password)
+      expect(result.accessToken).toBeTruthy()
+      expect(result.refreshToken).toBeTruthy()
+      expect(result.user).toBeTruthy()
+      const { user } = result
+      expect(user.name).toEqual(signUpArgs.name)
     })
     test('failure on sign in when email is missing', async () => {
       // arrange
@@ -236,23 +253,33 @@ describe(`e2e test for ${routerBase}`, () => {
       expect(response.statusCode).toBe(httpStatus.preconditionFailed)
       expect(body.code).toBe(AppError.USER_PASSWORD_MISSING.code)
     })
-  })
-
-  describe('jwt sign, jwt verify', () => {
-    const signPayload: UserSignPayload = {
-      user_cache_key: 'test user cache key',
-    }
-    let token: string
-
-    test('sign - encode', async () => {
-      token = await jwtUserSign(signPayload)
-      expect(typeof token).toBe('string')
+    test('failure on sign in with email which is not registered', async () => {
+      // arrange
+      const signInArgs: SignInRequestDto = {
+        email: 'yet-not-registered@email.com',
+        password: 'password1234!@',
+      }
+      // act
+      const response = await userSignIn(testAgent)(signInArgs)
+      // assert
+      const { body } = response
+      expect(response.statusCode).toBe(httpStatus.unauthorized)
+      expect(body.code).toBe(AppError.USER_EMAIL_NOT_REGISTERED.code)
     })
-
-    test('verify - decode', async () => {
-      const verifyPayload = await jwtUserVerify(token)
-      expect(typeof verifyPayload).toBe('object')
-      expect(verifyPayload.user_cache_key).toEqual(signPayload.user_cache_key)
+    test('failure on sign in with correct email but with wrong password', async () => {
+      // arrange
+      await signUpUserForTest()
+      // arrange
+      const signInArgs: SignInRequestDto = {
+        email: 'test-user@email.com',
+        password: 'wrong-pwd1234!',
+      }
+      // act
+      const response = await userSignIn(testAgent)(signInArgs)
+      // assert
+      const { body } = response
+      expect(response.statusCode).toBe(httpStatus.unauthorized)
+      expect(body.code).toBe(AppError.USER_INCORRECT_PASSWORD.code)
     })
   })
 })

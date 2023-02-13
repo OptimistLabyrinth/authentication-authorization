@@ -35,6 +35,13 @@ const getAuthRepository = (): IAuthRepository => {
         { session: session ?? null },
       )
     },
+    async findAuthEmailByEmail(email, session) {
+      return AuthEmail.findOne(
+        { email },
+        {},
+        { session: session ?? null },
+      )
+    },
   }
 }
 

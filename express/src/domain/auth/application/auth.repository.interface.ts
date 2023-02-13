@@ -24,4 +24,8 @@ export interface IAuthRepository {
     authId: Types.ObjectId,
     session?: ClientSession
   ): Promise<IAuthEmail | null>
+  findAuthEmailByEmail(
+    email: string,
+    session?: ClientSession
+  ): Promise<IAuthEmail | null>
 }

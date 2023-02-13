@@ -19,6 +19,8 @@ const userErrors = Object.freeze({
     'duplicate email is already registered',
   ),
   USER_NOT_FOUND: Err(httpStatus.notFound, 20102, 'user not found'),
+  USER_EMAIL_NOT_REGISTERED: Err(httpStatus.unauthorized, 20103, 'email is not registered'),
+  USER_INCORRECT_PASSWORD: Err(httpStatus.unauthorized, 20104, 'incorrect password'),
 })
 
 export default userErrors
