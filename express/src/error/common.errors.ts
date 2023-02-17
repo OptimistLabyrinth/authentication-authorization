@@ -17,6 +17,11 @@ const commonErrors = Object.freeze({
     10003,
     'cannot retrieve valid result from transaction',
   ),
+  COMMON_JWT_VERIFY_FAILED: Err(
+    httpStatus.internalServerError,
+    10004,
+    'failed to verify jwt token',
+  ),
 })
 
 export default commonErrors

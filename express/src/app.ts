@@ -5,6 +5,7 @@ import morgan from 'morgan'
 import generateAuthRouter from './domain/auth/api/auth.controller'
 import generateUserRouter from './domain/user/api/user.controller'
 import errorHandler from './errorHandler'
+import tokenMw from './middleware/tokenMw'
 import anythingRouter from './routes/anything'
 import rootRouter from './routes/index'
 
@@ -21,6 +22,7 @@ export const initializeApp = () => {
   app.use(express.static('public'))
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
+  app.use(tokenMw())
   app.use('/', rootRouter)
   app.use('/anything', anythingRouter)
   app.use('/auth', generateAuthRouter())

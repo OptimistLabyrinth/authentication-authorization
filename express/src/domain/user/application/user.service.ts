@@ -12,19 +12,19 @@ import {
 } from '../api/post-sign-up/response.dto'
 import { runWithTransaction, TransactionalFunction } from '../../../mongoose-utils/transaction'
 import { IUser, UserDocument } from '../../../models/user.model'
-import { AuthEmailDocument } from '../../../models/auth.model'
+import { AuthEmailDocument, IAuth } from '../../../models/auth.model'
 import { checkPassword } from '../../../utils/password'
 import { jwtUserSign } from '../../../utils/jwt-user'
 import { TokenTypes } from '../../../types/token'
+import { RefreshResponseDto } from '../api/post-refresh/response.dto'
 import { IUserRepository } from './user.repository.interface'
 
-export interface IUserService {
-  signUp(signUpDto: SignUpRequestDto): Promise<SignUpResponseDto>
-  signIn(signInDto: SignInRequestDto): Promise<SignInResponseDto>
-  findById(userId: Types.ObjectId, session?: ClientSession): Promise<IUser>
+interface IUserServicePrivate {
+  getUserAccessToken(authId: Types.ObjectId, userId: Types.ObjectId): Promise<string>
+  getUserRefreshToken(authId: Types.ObjectId, userId: Types.ObjectId): Promise<string>
 }
 
-const getUserServicePrivate = () => ({
+const getUserServicePrivate = (): IUserServicePrivate => ({
   async getUserAccessToken(authId: Types.ObjectId, userId: Types.ObjectId) {
     return jwtUserSign(
       {
@@ -44,6 +44,13 @@ const getUserServicePrivate = () => ({
     )
   },
 })
+
+export interface IUserService {
+  signUp(signUpDto: SignUpRequestDto): Promise<SignUpResponseDto>
+  signIn(signInDto: SignInRequestDto): Promise<SignInResponseDto>
+  refresh(auth: IAuth, user: IUser): Promise<RefreshResponseDto>
+  findById(userId: Types.ObjectId, session?: ClientSession): Promise<IUser>
+}
 
 const getUserService = (
   authService: IAuthService,
@@ -97,6 +104,16 @@ const getUserService = (
       const accessToken = await userServicePrivate.getUserAccessToken(authId, userId)
       const refreshToken = await userServicePrivate.getUserRefreshToken(authId, userId)
       return createSignInResponseDto(user, accessToken, refreshToken)
+    },
+    async refresh(auth, user) {
+      // * if (auth.type === AuthTypes.email)
+      const authEmailDoc = auth as AuthEmailDocument
+      const userDoc = user as UserDocument
+      const accessToken = await userServicePrivate.getUserAccessToken(
+        new Types.ObjectId(authEmailDoc._id),
+        new Types.ObjectId(userDoc._id),
+      )
+      return { accessToken }
     },
     async findById(userId, session) {
       const found = await userRepository.findById(userId, session)

@@ -33,17 +33,15 @@ describe(`e2e test for ${routerBase}`, () => {
     await cleanUpServer()
   })
 
-  const userSignUp = (
-    agent: supertest.SuperTest<Request>,
-  ) => (
+  const userSignUp = (agent: supertest.SuperTest<Request>) => (
     param: Partial<SignUpRequestDto>,
   ) => agent.post(`${routerBase}/sign-up`).send(param)
-
-  const userSignIn = (
-    agent: supertest.SuperTest<Request>,
-  ) => (
-    param: Partial<SignUpRequestDto>,
+  const userSignIn = (agent: supertest.SuperTest<Request>) => (
+    param: Partial<SignInRequestDto>,
   ) => agent.post(`${routerBase}/sign-in`).send(param)
+  const userRefresh = (agent: supertest.SuperTest<Request>) => (
+    refreshToken: string,
+  ) => agent.post(`${routerBase}/refresh`).set('Authorization', `Bearer ${refreshToken}`)
 
   const deleteAllDocuments = async () => Promise.all([
     User.deleteMany(),
@@ -51,14 +49,6 @@ describe(`e2e test for ${routerBase}`, () => {
     DeletedAuth.deleteMany(),
     DeletedUser.deleteMany(),
   ])
-
-  // describe('basic test suite', () => {
-  //   beforeEach(deleteAllDocuments)
-  //
-  //   test('1 + 1 = 2', () => {
-  //     expect(1 + 1).toBe(2)
-  //   })
-  // })
 
   describe(`POST ${routerBase}/sign-up`, () => {
     beforeEach(deleteAllDocuments)
@@ -74,12 +64,10 @@ describe(`e2e test for ${routerBase}`, () => {
       const response = await userSignUp(testAgent)(signUpArgs)
       // assert
       const { body } = response
-      const { message, result } = body
       expect(response.statusCode).toBe(httpStatus.created)
-      expect(message).toEqual('user sign up')
-      expect(result.authType).toBe('email')
-      expect(result.email).toEqual(signUpArgs.email)
-      expect(result.name).toEqual(signUpArgs.name)
+      expect(body.authType).toBe('email')
+      expect(body.email).toEqual(signUpArgs.email)
+      expect(body.name).toEqual(signUpArgs.name)
     })
     test('failure on sign up when email is missing', async () => {
       // arrange
@@ -220,13 +208,11 @@ describe(`e2e test for ${routerBase}`, () => {
       const response = await userSignIn(testAgent)(signInArgs)
       // assert
       const { body } = response
-      const { message, result } = body
       expect(response.statusCode).toBe(httpStatus.ok)
-      expect(message).toEqual('user sign in')
-      expect(result.accessToken).toBeTruthy()
-      expect(result.refreshToken).toBeTruthy()
-      expect(result.user).toBeTruthy()
-      const { user } = result
+      expect(body.accessToken).toBeTruthy()
+      expect(body.refreshToken).toBeTruthy()
+      expect(body.user).toBeTruthy()
+      const { user } = body
       expect(user.name).toEqual(signUpArgs.name)
     })
     test('failure on sign in when email is missing', async () => {
@@ -280,6 +266,54 @@ describe(`e2e test for ${routerBase}`, () => {
       const { body } = response
       expect(response.statusCode).toBe(httpStatus.unauthorized)
       expect(body.code).toBe(AppError.USER_INCORRECT_PASSWORD.code)
+    })
+  })
+
+  describe(`GET ${routerBase}/refresh`, () => {
+    const signUpArgs: SignUpRequestDto = {
+      email: 'test-user@email.com',
+      password: 'abcd1234@!',
+      name: 'test-user',
+    }
+    const signInArgs: SignInRequestDto = {
+      email: signUpArgs.email,
+      password: signUpArgs.password,
+    }
+
+    beforeEach(async () => {
+      await deleteAllDocuments()
+    })
+
+    const setupRefresh = (testAgent: supertest.SuperTest<Request>) => async () => {
+      await userSignUp(testAgent)(signUpArgs)
+      const signInResponse = await userSignIn(testAgent)(signInArgs)
+      const { body: signInBody } = signInResponse
+      const { accessToken, refreshToken } = signInBody
+      return { accessToken, refreshToken }
+    }
+
+    test('success on refresh', async () => {
+      // arrange
+      const { refreshToken } = await setupRefresh(testAgent)()
+      // act
+      const response = await userRefresh(testAgent)(refreshToken)
+      // assert
+      const { body } = response
+      expect(response.statusCode).toBe(httpStatus.ok)
+      const { accessToken: refreshedAccessToken } = body
+      expect(refreshedAccessToken).toBeTruthy()
+    })
+
+    test('failure on refresh with invalid refresh token', async () => {
+      // arrange
+      await setupRefresh(testAgent)()
+      const randomRefreshToken = 'random access token'
+      // act
+      const response = await userRefresh(testAgent)(randomRefreshToken)
+      // assert
+      const { body } = response
+      expect(response.statusCode).toBe(httpStatus.internalServerError)
+      expect(body.code).toBe(AppError.COMMON_JWT_VERIFY_FAILED.code)
     })
   })
 })

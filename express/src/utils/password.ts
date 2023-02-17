@@ -2,6 +2,7 @@ import crypto from 'crypto'
 import { ConfigDefinition } from '../conf/config.d'
 import { getConfig } from '../conf/config'
 import { AppError } from '../error'
+import { getCryptoRandom } from './crypto-utils'
 
 export type HashPasswordResult = {
   password: string
@@ -32,9 +33,9 @@ const getCryptoPbkdf2 = (
   )
 })
 
-export const hashPassword = (password: string): Promise<HashPasswordResult> => {
+export const hashPassword = async (password: string): Promise<HashPasswordResult> => {
   const config = getConfig()
-  const salt = crypto.randomBytes(config.pbkdf2Length).toString('hex')
+  const salt = await getCryptoRandom(config.pbkdf2Length, 'hex')
   return getCryptoPbkdf2(password, salt, config)
 }
 
