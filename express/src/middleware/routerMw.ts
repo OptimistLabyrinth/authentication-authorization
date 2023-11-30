@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 type RouterMwParam = (req: Request, res: Response, next?: NextFunction) => unknown | Promise<unknown>
 
-const routerMw = (func: RouterMwParam, option?: { stopNext: boolean }) => {
+const routerMw = (func: RouterMwParam, option?: { swallow: boolean }) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await func(req, res, next)
@@ -14,8 +14,8 @@ const routerMw = (func: RouterMwParam, option?: { stopNext: boolean }) => {
       next()
       return
     }
-    const { stopNext } = option
-    if (!stopNext) {
+    const { swallow } = option
+    if (!swallow) {
       next()
     }
   }

@@ -307,6 +307,14 @@ const rulesEslintLayoutFormatting = {
   ],
   'template-curly-spacing': [ defaultLevelLayoutFormatting, 'never' ],
   'template-tag-spacing': [ defaultLevelLayoutFormatting, 'always' ],
+  'no-useless-rename': [
+    defaultLevelLayoutFormatting,
+    {
+      'ignoreDestructuring': false,
+      'ignoreImport': false,
+      'ignoreExport': false,
+    },
+  ],
   'wrap-iife': [
     defaultLevelLayoutFormatting,
     'inside',
