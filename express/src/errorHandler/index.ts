@@ -1,13 +1,21 @@
-import { NextFunction, Request, Response } from 'express'
+/* eslint-disable no-console */
+import type {
+  Request,
+  Response,
+} from 'express'
 
-export default function (
+const globalErrorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction,
-) {
+): void => {
   console.error(err)
   const status = 500
-  res.status(status).send({ code: status, description: 'internal server error' })
+  res.status(status)
+    .send({
+      code: status,
+      description: 'internal server error',
+    })
 }
+
+export default globalErrorHandler

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import http from 'http'
 import dotenv from 'dotenv'
 import { initializeApp } from './app'

@@ -6,15 +6,15 @@ import errorHandler from './errorHandler'
 import anythingRouter from './routes/anything'
 import rootRouter from './routes/index'
 
-export const initializeApp = () => {
+export const initializeApp = (): express.Express => {
   const app = express()
   app.use(cors())
   app.use(
-    process.env.NODE_ENV === 'test'
-      ? (req, res, next) => {
-          next()
-        }
-      : morgan(':method :url :status :res[content-length] - :response-time ms'),
+    process.env.NODE_ENV === 'test' ?
+      (req, res, next) => {
+        next()
+      } :
+      morgan(':method :url :status :res[content-length] - :response-time ms'),
   )
   app.use(express.static('public'))
   app.use(bodyParser.urlencoded({ extended: true }))
